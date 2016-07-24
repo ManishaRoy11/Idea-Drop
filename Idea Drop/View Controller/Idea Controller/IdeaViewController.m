@@ -200,6 +200,50 @@
 
 -(void) recognizerRight:(UISwipeGestureRecognizer *)gesture{
     
+    
+    if (selectedCellIndex == 100000) {
+        IdeaListTVCell *cell = (IdeaListTVCell *)gesture.view;
+        int viewTag = (int)cell.tag;
+        if ([[[ideaListArray objectAtIndex:(int)cell.tag] valueForKey:IS_COMPLETED] isEqualToString:@"0"]) {
+            NSString* query = [NSString stringWithFormat:@"update idea_master set IS_COMPLETED = 1 where idea_id=%ld", [[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
+            
+            bool isFound = [Database dbOperation:query];
+            
+            if (isFound){
+                
+                UIApplication *app = (UIApplication *)[UIApplication sharedApplication];
+                NSArray *oldNotifications = [app scheduledLocalNotifications];
+                
+                for (int i = 0; i<oldNotifications.count; i++) {
+                    UILocalNotification * notification = [oldNotifications objectAtIndex:i];
+                    if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue] == [[notification.userInfo valueForKey:IDEA_ID] integerValue]) {
+                        [app cancelLocalNotification:notification];
+                        break;
+                    }
+                }
+                
+                if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:LIST_ID] integerValue] == CAPTURE_LIST_ID) {
+                    query = [NSString stringWithFormat:@"update idea_master set list_id = %d where idea_id=%ld",UNCATEGORIZED_LIST_ID ,[[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
+                    
+                    [Database dbOperation:query];
+                    [ideaListArray removeObjectAtIndex:viewTag];
+                    
+                }else{
+                    [[ideaListArray objectAtIndex:viewTag] setValue:@"1" forKey:IS_COMPLETED];
+                    
+                }
+                
+                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Successfully completed the idea." withY:64];
+                [_tableView reloadData];
+            }else{
+                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Error while completing in idea" withY:64];
+                
+            }
+            
+            return;
+        }
+    }
+    
     IdeaListTVCell *cell = (IdeaListTVCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedCellIndex inSection:0]];
     cell.ideaOptionView_x.constant = SCREEN_WIDTH;
     
@@ -223,14 +267,17 @@
     cell.ideaOptionView_x.constant = SCREEN_WIDTH;
     
     cell = (IdeaListTVCell *)gesture.view;
-    cell.ideaOptionView_x.constant = SCREEN_WIDTH - 210;
-    selectedCellIndex = (int)cell.tag;
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        [self.view layoutIfNeeded];
-    } completion:^(BOOL finished) {
+    if ([[[ideaListArray objectAtIndex:(int)cell.tag] valueForKey:IS_COMPLETED] isEqualToString:@"0"]) {
+        cell.ideaOptionView_x.constant = SCREEN_WIDTH - 210;
+        selectedCellIndex = (int)cell.tag;
         
-    }];
+        [UIView animateWithDuration:0.3 animations:^{
+            [self.view layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            
+        }];
+    }
+
     
 }
 
