@@ -12,5 +12,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLbl;
 @property (weak, nonatomic) IBOutlet UIButton *sliderBtn;
 @property (weak, nonatomic) IBOutlet UIButton *valueBtn;
+@property (weak, nonatomic) IBOutlet UIButton *refrshBtn;
 
 @end

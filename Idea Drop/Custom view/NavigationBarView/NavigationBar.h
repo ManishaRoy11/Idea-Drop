@@ -18,7 +18,7 @@
     BOOL menuState;
 }
 
-@property BOOL isback, isOption;
+@property BOOL isback;
 @property (weak,nonatomic) id<NavigationBarDelegate> delegate;
 
 @property (strong, nonatomic)NSString *navigationTitle;
@@ -27,12 +27,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *navigationTitleLbl;
 @property (weak, nonatomic) IBOutlet UILabel *statusLbl;
 @property (weak, nonatomic) IBOutlet UIButton *addListBtn;
+@property (weak, nonatomic) IBOutlet UIButton *sortBtn;
 
 
 -(id)initWithNib;
 -(void)defaultSetup;
 -(IBAction)menuClicked:(id)sender;
--(IBAction)notificationClicked:(id)sender;
 
 
 @end

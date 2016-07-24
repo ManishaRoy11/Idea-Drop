@@ -150,8 +150,13 @@
         
         cell.textView.inputAccessoryView = toolbar;
         
+        if (!_selectedData) {
+            [cell.textView becomeFirstResponder];
+        }
+        
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.tag = 1000 + indexPath.row;
         return cell;
     }
     else if (indexPath.row < 3){
@@ -167,10 +172,16 @@
                 static NSDateFormatter *dateFormatter;
                 dateFormatter = [NSDateFormatter new];
                 dateFormatter.dateFormat = @"dd-MM-yyyy";
+                dateFormatter.timeZone=[NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+
                 NSString *str = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
                 
                 if (![str isEqualToString:@"01-01-1970"]) {
                     _selectedDate = [_selectedData valueForKey:DUE_DATE];
+                    
+                    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+                    [dateFormatter setTimeZone:timeZone];
+                    str = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
                     
                     [cell.btn setTitle:str forState:UIControlStateNormal];
                 }
@@ -192,8 +203,20 @@
         [cell.btn setTitleEdgeInsets:UIEdgeInsetsMake(0, 12, 0, 42)];
         [cell.btn addTarget:self action:@selector(openCalendarOrTime:) forControlEvents:UIControlEventTouchUpInside];
         
+        if ([cell.btn titleForState:UIControlStateNormal].length>0) {
+            cell.refrshBtn.hidden = false;
+        }else{
+            cell.refrshBtn.hidden = true;
+        }
+        
+        
+        
+        cell.refrshBtn.tag = indexPath.row;
+        [cell.refrshBtn addTarget:self action:@selector(clearSelectedCell:) forControlEvents:UIControlEventTouchUpInside];
+        
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.tag = 1000 + indexPath.row;
         return cell;
     }
     ReminderCell *cell = (ReminderCell *)[tableView dequeueReusableCellWithIdentifier:@"ReminderCell"];
@@ -201,6 +224,9 @@
     if (!cell) {
         cell = [[ReminderCell alloc] init];
     }
+    
+    cell.sliderBtn.tag = indexPath.row;
+    cell.valueBtn.tag = indexPath.row;
     
     if (indexPath.row == 3) {
         cell.titleLbl.text = @"Reminder";
@@ -223,29 +249,34 @@
         }
         cell.titleLbl.text = @"Repeat";
     }
-    
-    cell.sliderBtn.tag = indexPath.row;
+
     [cell.sliderBtn setImage:[UIImage imageNamed:@"slider off"] forState:UIControlStateNormal];
     [cell.sliderBtn setImage:[UIImage imageNamed:@"slider on"] forState:UIControlStateSelected];
     [cell.sliderBtn addTarget:self action:@selector(sliderPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    cell.valueBtn.tag = indexPath.row;
     [cell.valueBtn addTarget:self action:@selector(openCustomPicker:) forControlEvents:UIControlEventTouchUpInside];
     
     cell.valueBtn.layer.cornerRadius = 2;
     cell.valueBtn.clipsToBounds = YES;
     [cell.valueBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 12, 0, 32 )];
     
+    
+    if (![[cell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]) {
+        cell.refrshBtn.hidden = false;
+    }else{
+        cell.refrshBtn.hidden = true;
+    }
+    
+    cell.refrshBtn.tag = indexPath.row;
+    [cell.refrshBtn addTarget:self action:@selector(clearSelectedCell:) forControlEvents:UIControlEventTouchUpInside];
+    
     cell.backgroundColor = [UIColor clearColor];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.tag = 1000 + indexPath.row;
     return cell;
 }
 
 #pragma mark - UITextView Delegate
-
--(void)textViewDidBeginEditing:(UITextView *)textView{
-
-}
 
 - (IBAction)doneClicked:(id)sender
 {
@@ -253,6 +284,79 @@
 }
 
 #pragma mark - IBAction
+
+-(void)clearSelectedCell:(UIButton *)sender{
+    
+//    Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+//
+//    Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+//    
+//    ReminderCell *reminderCell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+//    
+//    ReminderCell *repeatCell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
+    
+    Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView viewWithTag:1001];
+    
+    Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView viewWithTag:1002];
+    
+    ReminderCell *reminderCell =  (ReminderCell *)[_tableView viewWithTag:1003];
+    
+    ReminderCell *repeatCell =  (ReminderCell *)[_tableView viewWithTag:1004];
+
+    if (sender.tag == 1) {
+        [dateCell.btn setTitle:@"" forState:UIControlStateNormal];
+        _selectedDate = nil;
+        dateCell.refrshBtn.hidden = true;
+
+//        [timeCell.btn setTitle:@"" forState:UIControlStateNormal];
+//
+//        timeCell.refrshBtn.hidden = true;
+//        reminderCell.refrshBtn.hidden = true;
+//        repeatCell.refrshBtn.hidden = true;
+//        
+//        [reminderCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
+//        [reminderCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
+//        reminderCell.sliderBtn.selected = false;
+//        
+//        [repeatCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
+//        [repeatCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
+//        repeatCell.sliderBtn.selected = false;
+
+    
+    }else if (sender.tag == 2){
+        [timeCell.btn setTitle:@"" forState:UIControlStateNormal];
+        
+        timeCell.refrshBtn.hidden = true;
+        
+//        reminderCell.refrshBtn.hidden = true;
+//        repeatCell.refrshBtn.hidden = true;
+//        
+//        [reminderCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
+//        [reminderCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
+//        reminderCell.sliderBtn.selected = false;
+//        
+//        [repeatCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
+//        [repeatCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
+//        repeatCell.sliderBtn.selected = false;
+        
+    }else if (sender.tag == 3){
+        [self sliderPressed:reminderCell.sliderBtn];
+
+        reminderCell.refrshBtn.hidden = true;
+
+//        [self sliderPressed:repeatCell.sliderBtn];
+//
+//        repeatCell.refrshBtn.hidden = true;
+        
+    }else if (sender.tag == 4){
+        [self sliderPressed:repeatCell.sliderBtn];
+
+        repeatCell.refrshBtn.hidden = true;
+
+    }
+    
+    
+}
 
 -(void)openCalendarOrTime:(UIButton *)sender{
     [self.view endEditing:YES];
@@ -283,14 +387,14 @@
     ReminderCell *cell ;
     
     if (sender.tag == 3) {
-        cell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+        cell =  (ReminderCell *)[_tableView viewWithTag:1003];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
         if (!cell.sliderBtn.isSelected) {
             [ToastPopup toastInView:self.view withText:@"Please activate the reminder switch." withY:64];
             return;
         }
         
     }else{
-        cell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
+        cell =  (ReminderCell *)[_tableView viewWithTag:1004];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
         if (!cell.sliderBtn.isSelected) {
             [ToastPopup toastInView:self.view withText:@"Please activate the repeater switch." withY:64];
             return;
@@ -334,7 +438,7 @@
 
 -(void)sliderPressed:(UIButton *)sender{
     sender.selected = !sender.selected;
-    ReminderCell *cell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
+    ReminderCell *cell =  (ReminderCell *)[_tableView viewWithTag:(1000+sender.tag)];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
     
     if (sender.selected) {
         [cell.valueBtn setTitleColor:Color_3D3D3D forState:UIControlStateNormal];
@@ -355,29 +459,29 @@
 }
 
 - (IBAction)savePressed:(UIButton *)sender {
-    TextViewCell *textCell =  (TextViewCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
-    ReminderCell *reminderCell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
-    ReminderCell *repeatCell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
+    TextViewCell *textCell =  (TextViewCell *)[_tableView viewWithTag:1000];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView viewWithTag:1001];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView viewWithTag:1002];[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    ReminderCell *reminderCell =  (ReminderCell *)[_tableView viewWithTag:1003];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    ReminderCell *repeatCell =  (ReminderCell *)[_tableView viewWithTag:1004];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
     
     if ([textCell.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length==0) {
         [ToastPopup toastInView:self.view withText:@"Please enter your idea." withY:64];
         return;
         
-    }else if ([Database checkAlreadyEsistingRec:[NSString stringWithFormat:@"select count(IDEA_NAME) from IDEA_MASTER where IDEA_NAME='%@'",textCell.textView.text]] && ! _selectedDate){
+    }else if ([Database checkAlreadyEsistingRec:[NSString stringWithFormat:@"select count(IDEA_NAME) from IDEA_MASTER where IDEA_NAME='%@'",textCell.textView.text]] && ! _selectedData){
         [ToastPopup toastInView:self.view withText:@"idea with same description already existing" withY:64];
         return;
         
-    }else if ((dateCell.btn.titleLabel.text.length>0) && (timeCell.btn.titleLabel.text.length == 0)){
+    }else if (([dateCell.btn titleForState:UIControlStateNormal].length>0) && ([timeCell.btn titleForState:UIControlStateNormal].length == 0)){
         [ToastPopup toastInView:self.view withText:@"Please give due time." withY:64];
         return;
         
-    }else if ((timeCell.btn.titleLabel.text.length > 0) && (dateCell.btn.titleLabel.text.length == 0)){
+    }else if (([timeCell.btn titleForState:UIControlStateNormal].length > 0) && ([dateCell.btn titleForState:UIControlStateNormal].length == 0)){
         [ToastPopup toastInView:self.view withText:@"Please give due date." withY:64];
         return;
         
-    }else if (reminderCell.sliderBtn.selected && (dateCell.btn.titleLabel.text.length==0)){
+    }else if (reminderCell.sliderBtn.selected && ([dateCell.btn titleForState:UIControlStateNormal].length==0)){
         [ToastPopup toastInView:self.view withText:@"Please give due time." withY:64];
         return;
         
@@ -451,7 +555,7 @@
                 
                 static NSDateFormatter *dateFormatter;
                 dateFormatter = [NSDateFormatter new];
-                dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+                dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm";
                 dateFormatter.timeZone=[NSTimeZone timeZoneWithAbbreviation:@"GMT"];
                 NSString *dateStr = [dateFormatter stringFromDate:_selectedDate];
                 NSString *timeStr = [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]];
@@ -461,12 +565,12 @@
                     x = x+12;
                     timeStr = [timeStr stringByReplacingOccurrencesOfString:[timeStr substringToIndex:2] withString:[NSString stringWithFormat:@"%d",x]];
                 }
-                timeStr = [timeStr substringToIndex:8];
-                dateStr = [dateStr stringByReplacingOccurrencesOfString:[[dateStr substringToIndex:19] substringFromIndex:11] withString:timeStr];
+                timeStr = [timeStr substringToIndex:5];
+                dateStr = [dateStr stringByReplacingOccurrencesOfString:[[dateStr substringToIndex:16] substringFromIndex:11] withString:timeStr];
                 _selectedDate = [dateFormatter dateFromString:dateStr];
-                
+
                 [dic setObject:textCell.textView.text forKey:IDEA_NAME];
-                [dic setObject:[[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate forKey:DUE_DATE];
+                [dic setObject:[[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate==nil?@"":_selectedDate forKey:DUE_DATE];
                 [dic setObject:[COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]] forKey:DUE_TIME];
                 [dic setObject:[[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal] forKey:REMINDER];
                 [dic setObject:[[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal] forKey:REPEAT];
@@ -512,6 +616,8 @@
                     alarm.alertTitle = @"Idea Drop";
                     
                     dateFormatter.dateFormat = @"dd-MM-yyyy hh-mm a";
+                    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+                    [dateFormatter setTimeZone:timeZone];
                     
                     alarm.alertBody = [NSString stringWithFormat:@"Your upcoming event is '%@'\nDue date: %@",[dic valueForKey:IDEA_NAME], [dateFormatter stringFromDate:[dic valueForKey:DUE_DATE]]];
                     
@@ -544,10 +650,11 @@
         ReminderCell *cell ;
         
         if (pickerUse == Reminder_Purpose) {
-            cell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+            cell =  (ReminderCell *)[_tableView viewWithTag:1003];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
         }else{
-            cell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
+            cell =  (ReminderCell *)[_tableView viewWithTag:1004];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
         }
+        cell.refrshBtn.hidden = false;
         [cell.valueBtn setTitle:selectedValue forState:UIControlStateNormal];
         
     }
@@ -558,8 +665,10 @@
 
 -(void)clockTime:(NSString *)timeStr{
     
-    Date_TimeCell *cell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    Date_TimeCell *cell =  (Date_TimeCell *)[_tableView viewWithTag:1002];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     [cell.btn setTitle:timeStr forState:UIControlStateNormal];
+    cell.refrshBtn.hidden = false;
+
 
 }
 
@@ -571,9 +680,13 @@
     static NSDateFormatter *dateFormatter;
     dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"dd-MM-yyyy";
+    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+    [dateFormatter setTimeZone:timeZone];
     
-    Date_TimeCell *cell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    Date_TimeCell *cell =  (Date_TimeCell *)[_tableView viewWithTag:1001];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     [cell.btn setTitle:[dateFormatter stringFromDate:date] forState:UIControlStateNormal];
+    cell.refrshBtn.hidden = false;
+
     
     
 }

@@ -47,7 +47,7 @@
 
     
     _dateFormatter = [[NSDateFormatter alloc] init];
-    [_dateFormatter setDateFormat:@"HH:mm:ss a"];
+    [_dateFormatter setDateFormat:@"HH:mm a"];
     _date = [NSDate date];
     NSString *str = [_dateFormatter stringFromDate:_date];
     if ([[str uppercaseString] containsString:@"PM"]) {
@@ -103,7 +103,7 @@
         int hoursInt = [hours intValue];
         int minutesInt = [minutes intValue];
         int secondsInt = [seconds intValue];
-        self.myLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d %@", hoursInt, minutesInt, secondsInt,amPmStr];
+        self.myLabel.text = [NSString stringWithFormat:@"%02d:%02d %@", hoursInt, minutesInt, amPmStr];
 
 }
 @end

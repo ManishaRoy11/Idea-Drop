@@ -45,7 +45,7 @@
         
     }else{
         navBar.backgroundColor = Color_21AA68;
-    }    navBar.isOption = YES;
+    }
     [self.view addSubview:navBar];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture:)];
@@ -92,12 +92,19 @@
     static NSDateFormatter *dateFormatter;
     dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"dd-MM-yyyy";
+    dateFormatter.timeZone=[NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     
     NSString *str1 = @"Due Date : ";
     NSString *str2 = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
     if ([str2 isEqualToString:@"01-01-1970"]) {
         str2 = @"";
+    }else{
+        NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+        [dateFormatter setTimeZone:timeZone];
+        str2 = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
     }
+    
+
     
     NSMutableAttributedString * newString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@%@",str1, str2] attributes:attributes];
     

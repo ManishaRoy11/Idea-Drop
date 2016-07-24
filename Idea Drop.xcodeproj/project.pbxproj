@@ -75,6 +75,8 @@
 		137C6C691D2A885E00FBF888 /* JTVerticalCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 137C6C5D1D2A885E00FBF888 /* JTVerticalCalendarView.m */; };
 		137C6C6D1D2AA40100FBF888 /* CustomPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 137C6C6C1D2AA40100FBF888 /* CustomPicker.m */; };
 		137C6C6F1D2AA41300FBF888 /* CustomPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 137C6C6E1D2AA41300FBF888 /* CustomPicker.xib */; };
+		13C3A0211D44B7E4008A6DA4 /* SortView.m in Sources */ = {isa = PBXBuildFile; fileRef = 13C3A0201D44B7E4008A6DA4 /* SortView.m */; };
+		13C3A0231D44B7F3008A6DA4 /* SortView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13C3A0221D44B7F3008A6DA4 /* SortView.xib */; };
 		13EDAFB31D2E432000AEBD7D /* RightSideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EDAFB21D2E432000AEBD7D /* RightSideMenu.m */; };
 /* End PBXBuildFile section */
 
@@ -210,6 +212,9 @@
 		137C6C6B1D2AA40100FBF888 /* CustomPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPicker.h; sourceTree = "<group>"; };
 		137C6C6C1D2AA40100FBF888 /* CustomPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPicker.m; sourceTree = "<group>"; };
 		137C6C6E1D2AA41300FBF888 /* CustomPicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomPicker.xib; sourceTree = "<group>"; };
+		13C3A01F1D44B7E4008A6DA4 /* SortView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortView.h; sourceTree = "<group>"; };
+		13C3A0201D44B7E4008A6DA4 /* SortView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortView.m; sourceTree = "<group>"; };
+		13C3A0221D44B7F3008A6DA4 /* SortView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SortView.xib; sourceTree = "<group>"; };
 		13EDAFB11D2E432000AEBD7D /* RightSideMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightSideMenu.h; sourceTree = "<group>"; };
 		13EDAFB21D2E432000AEBD7D /* RightSideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightSideMenu.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -238,6 +243,7 @@
 		13099E601D252727005CC255 /* Custom view */ = {
 			isa = PBXGroup;
 			children = (
+				13C3A01E1D44B7BA008A6DA4 /* SortView */,
 				132145F31D33834A006D8D07 /* AlertView */,
 				137C6C6A1D2AA3EC00FBF888 /* PickerView */,
 				137C6C341D2A870000FBF888 /* CalendarView */,
@@ -678,6 +684,16 @@
 			path = PickerView;
 			sourceTree = "<group>";
 		};
+		13C3A01E1D44B7BA008A6DA4 /* SortView */ = {
+			isa = PBXGroup;
+			children = (
+				13C3A01F1D44B7E4008A6DA4 /* SortView.h */,
+				13C3A0201D44B7E4008A6DA4 /* SortView.m */,
+				13C3A0221D44B7F3008A6DA4 /* SortView.xib */,
+			);
+			path = SortView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -744,6 +760,7 @@
 				137C6C331D2A7FE100FBF888 /* arrow-double-up-down-128.png in Resources */,
 				13620F5E1D24FF6C00F3E051 /* AvenirNextLTPro-Bold.otf in Resources */,
 				13620F5F1D24FF6C00F3E051 /* AvenirNextLTPro-Demi.otf in Resources */,
+				13C3A0231D44B7F3008A6DA4 /* SortView.xib in Resources */,
 				13620EDB1D24FB8C00F3E051 /* Assets.xcassets in Resources */,
 				13620ED91D24FB8C00F3E051 /* Main.storyboard in Resources */,
 				137C6C6F1D2AA41300FBF888 /* CustomPicker.xib in Resources */,
@@ -793,6 +810,7 @@
 				137C6C671D2A885E00FBF888 /* JTCalendarWeekView.m in Sources */,
 				137C6C5F1D2A885E00FBF888 /* JTCalendarSettings.m in Sources */,
 				1360F30A1D268FF500A0535A /* IdeaListTVCell.m in Sources */,
+				13C3A0211D44B7E4008A6DA4 /* SortView.m in Sources */,
 				13620F5A1D24FF6C00F3E051 /* CommonMethods.m in Sources */,
 				1360F3111D269C7B00A0535A /* ListTVCell.m in Sources */,
 				137C6C2F1D2A6B7200FBF888 /* ClockView.m in Sources */,

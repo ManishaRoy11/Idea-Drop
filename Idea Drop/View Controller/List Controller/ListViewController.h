@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SortView.h"
 
-@interface ListViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate>
+@interface ListViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate, SortViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end

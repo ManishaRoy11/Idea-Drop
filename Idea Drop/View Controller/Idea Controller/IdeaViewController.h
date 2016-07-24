@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SortView.h"
 
-@interface IdeaViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate>
+@interface IdeaViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate, SortViewDelegate>
 
 @property (weak, nonatomic) NSMutableDictionary *selectedList;
 

@@ -47,9 +47,16 @@
                     <state key="normal" image="plus">
                         <color key="titleColor" red="0.53725490200000003" green="0.53725490200000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <connections>
-                        <action selector="notificationClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="vNm-4X-BgP"/>
-                    </connections>
+                </button>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gb1-tr-02P">
+                    <rect key="frame" x="189" y="22" width="42" height="39"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="42" id="iUe-af-vG8"/>
+                    </constraints>
+                    <state key="normal" image="sort">
+                        <color key="titleColor" red="0.53725490200000003" green="0.53725490200000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="53S-VE-i4U">
                     <rect key="frame" x="3" y="20" width="44" height="44"/>
@@ -71,9 +78,6 @@
                     <state key="normal" image="notification">
                         <color key="titleColor" red="0.53725490196078429" green="0.53725490196078429" blue="0.53725490196078429" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <connections>
-                        <action selector="notificationClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="K7g-L3-iJv"/>
-                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" red="0.23968211210000001" green="0.66666666669999997" blue="0.16662176719999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -86,8 +90,11 @@
                 <constraint firstItem="dIL-5C-SgN" firstAttribute="top" secondItem="mhz-Ld-t24" secondAttribute="bottom" constant="2" id="WKa-ys-mTc"/>
                 <constraint firstAttribute="trailing" secondItem="ULO-Gr-aW5" secondAttribute="trailing" constant="3" id="bdk-Vn-wj6"/>
                 <constraint firstItem="ULO-Gr-aW5" firstAttribute="top" secondItem="mhz-Ld-t24" secondAttribute="bottom" constant="2" id="d1n-LI-Nz8"/>
+                <constraint firstItem="Gb1-tr-02P" firstAttribute="top" secondItem="mhz-Ld-t24" secondAttribute="bottom" constant="2" id="gY2-Gz-hss"/>
+                <constraint firstItem="dIL-5C-SgN" firstAttribute="leading" secondItem="Gb1-tr-02P" secondAttribute="trailing" constant="1" id="jsh-DR-8wf"/>
                 <constraint firstItem="53S-VE-i4U" firstAttribute="top" secondItem="mhz-Ld-t24" secondAttribute="bottom" id="lYi-WE-yHH"/>
                 <constraint firstItem="mhz-Ld-t24" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="xUk-tX-jVM"/>
+                <constraint firstAttribute="bottom" secondItem="Gb1-tr-02P" secondAttribute="bottom" constant="3" id="zFH-S3-q5y"/>
                 <constraint firstItem="53S-VE-i4U" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="3" id="zNa-b9-J26"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -100,6 +107,7 @@
                 <outlet property="menuIcon" destination="53S-VE-i4U" id="jzO-yk-4vs"/>
                 <outlet property="navigationTitleLbl" destination="iPu-CU-BP3" id="EZA-uG-PoX"/>
                 <outlet property="notIcon" destination="ULO-Gr-aW5" id="H1p-0u-4cg"/>
+                <outlet property="sortBtn" destination="Gb1-tr-02P" id="3xa-e8-jtT"/>
                 <outlet property="statusLbl" destination="mhz-Ld-t24" id="ZUj-vx-pUz"/>
             </connections>
             <point key="canvasLocation" x="603" y="338"/>
@@ -108,5 +116,6 @@
     <resources>
         <image name="notification" width="23" height="26"/>
         <image name="plus" width="24" height="24"/>
+        <image name="sort" width="48" height="48"/>
     </resources>
 </document>

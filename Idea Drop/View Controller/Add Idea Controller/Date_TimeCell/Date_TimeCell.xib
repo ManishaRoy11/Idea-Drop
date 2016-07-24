@@ -39,6 +39,14 @@
                             <color key="titleColor" red="0.23921568630000001" green="0.23921568630000001" blue="0.23921568630000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sfX-87-bgo">
+                        <rect key="frame" x="220" y="10" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="30" id="1ie-Sy-bI8"/>
+                            <constraint firstAttribute="height" constant="30" id="m3t-Bp-VNt"/>
+                        </constraints>
+                        <state key="normal" image="refresh"/>
+                    </button>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" translatesAutoresizingMaskIntoConstraints="NO" id="lNO-AT-psZ">
                         <rect key="frame" x="264" y="15" width="20" height="20"/>
                         <constraints>
@@ -53,6 +61,8 @@
                     <constraint firstItem="asi-k1-G6a" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="24" id="5vn-vC-k27"/>
                     <constraint firstItem="8RM-O8-wVp" firstAttribute="leading" secondItem="asi-k1-G6a" secondAttribute="trailing" constant="6" id="XHo-7Y-l2m"/>
                     <constraint firstAttribute="trailing" secondItem="8RM-O8-wVp" secondAttribute="trailing" constant="24" id="Yic-cL-KS0"/>
+                    <constraint firstItem="lNO-AT-psZ" firstAttribute="leading" secondItem="sfX-87-bgo" secondAttribute="trailing" constant="14" id="dZg-t5-Vne"/>
+                    <constraint firstItem="sfX-87-bgo" firstAttribute="centerY" secondItem="8RM-O8-wVp" secondAttribute="centerY" id="mYS-rx-Mii"/>
                     <constraint firstItem="asi-k1-G6a" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="pXW-JC-hNX"/>
                     <constraint firstAttribute="bottom" secondItem="8RM-O8-wVp" secondAttribute="bottom" constant="3" id="tqj-z2-w8J"/>
                     <constraint firstAttribute="trailing" secondItem="lNO-AT-psZ" secondAttribute="trailing" constant="36" id="w3X-6Z-uGH"/>
@@ -61,6 +71,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="btn" destination="8RM-O8-wVp" id="fKm-DQ-Mru"/>
+                <outlet property="refrshBtn" destination="sfX-87-bgo" id="Fzr-QM-Xw1"/>
                 <outlet property="titleLbl" destination="asi-k1-G6a" id="rh7-Ia-Wa4"/>
             </connections>
             <point key="canvasLocation" x="1" y="191"/>
@@ -68,5 +79,6 @@
     </objects>
     <resources>
         <image name="calendar" width="23" height="22"/>
+        <image name="refresh" width="48" height="48"/>
     </resources>
 </document>

@@ -88,6 +88,9 @@
     static NSDateFormatter *dateFormatter;
     dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"dd-MM-yyyy hh-mm a";
+    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+    [dateFormatter setTimeZone:timeZone];
+
     [lbl2 setText:[NSString stringWithFormat:@"Due time :%@", [dateFormatter stringFromDate:[localNotification.userInfo valueForKey:DUE_DATE]]]];
     
     cell.backgroundColor=[UIColor clearColor];

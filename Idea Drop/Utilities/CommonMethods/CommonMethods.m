@@ -488,7 +488,7 @@ static CommonMethods *sharedInstance;
         
         NSDate *today = [NSDate date];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"dd-MM-yyyy hh:mm:ss"];
+        [dateFormatter setDateFormat:@"dd-MM-yyyy hh:mm"];
         NSString *currentTime = [dateFormatter stringFromDate:today];
         dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
         today = [dateFormatter dateFromString:currentTime];

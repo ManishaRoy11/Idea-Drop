@@ -32,13 +32,21 @@
                         <color key="textColor" red="0.23921568630000001" green="0.23921568630000001" blue="0.23921568630000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gf3-Gq-lZ9">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gf3-Gq-lZ9">
                         <rect key="frame" x="24" y="40" width="272" height="28"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <fontDescription key="fontDescription" name="AvenirNextLTPro-Regular" family="Avenir Next LT Pro" pointSize="16"/>
                         <state key="normal" title="Select">
                             <color key="titleColor" red="0.61960784313725492" green="0.61960784313725492" blue="0.61960784313725492" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A2K-IL-pf6">
+                        <rect key="frame" x="235" y="40" width="28" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="28" id="DSW-t9-wCJ"/>
+                            <constraint firstAttribute="height" constant="28" id="L0D-xx-aM9"/>
+                        </constraints>
+                        <state key="normal" image="refresh"/>
                     </button>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="down arrow" translatesAutoresizingMaskIntoConstraints="NO" id="epJ-pZ-BqR">
                         <rect key="frame" x="274" y="50" width="10" height="8"/>
@@ -61,6 +69,8 @@
                     <constraint firstItem="gf3-Gq-lZ9" firstAttribute="top" secondItem="n4y-JQ-iNQ" secondAttribute="bottom" constant="1" id="1Bu-JW-l6i"/>
                     <constraint firstItem="gf3-Gq-lZ9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="24" id="557-mT-kme"/>
                     <constraint firstItem="epJ-pZ-BqR" firstAttribute="centerY" secondItem="gf3-Gq-lZ9" secondAttribute="centerY" id="6YL-6o-U7S"/>
+                    <constraint firstItem="epJ-pZ-BqR" firstAttribute="leading" secondItem="A2K-IL-pf6" secondAttribute="trailing" constant="11" id="83F-uj-CXg"/>
+                    <constraint firstItem="A2K-IL-pf6" firstAttribute="centerY" secondItem="gf3-Gq-lZ9" secondAttribute="centerY" id="Ek2-dc-XHq"/>
                     <constraint firstAttribute="trailing" secondItem="n4y-JQ-iNQ" secondAttribute="trailing" constant="24" id="Jdi-li-Lgc"/>
                     <constraint firstAttribute="trailing" secondItem="gf3-Gq-lZ9" secondAttribute="trailing" constant="24" id="KgK-ug-OuC"/>
                     <constraint firstItem="n4y-JQ-iNQ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="M7B-Zu-Jbe"/>
@@ -71,6 +81,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="refrshBtn" destination="A2K-IL-pf6" id="3ZE-ff-ak5"/>
                 <outlet property="sliderBtn" destination="n4y-JQ-iNQ" id="e1R-JR-6u5"/>
                 <outlet property="titleLbl" destination="Hrs-4a-Fee" id="e2A-CT-4dX"/>
                 <outlet property="valueBtn" destination="gf3-Gq-lZ9" id="YlZ-IC-mOB"/>
@@ -79,6 +90,7 @@
     </objects>
     <resources>
         <image name="down arrow" width="10" height="8"/>
+        <image name="refresh" width="48" height="48"/>
         <image name="slider off" width="30" height="20"/>
     </resources>
 </document>

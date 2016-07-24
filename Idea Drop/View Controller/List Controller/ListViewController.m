@@ -13,6 +13,7 @@
     NavigationBar *navBar;
     NSMutableArray *listArray;
     AlertView *alertView;
+    SortView *sortView;
     int selectedIndex, selectedCellIndex;
 
 }
@@ -33,8 +34,20 @@
 
     [navBar.addListBtn addTarget:self action:@selector(addListClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:navBar];
+    navBar.sortBtn.hidden = NO;
+    [navBar.sortBtn addTarget:self action:@selector(sortListClicked:) forControlEvents:UIControlEventTouchUpInside];
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    
+    listArray = [Database fetchAllList:@"0" isUncatReq:YES];
+    
+    sortView = [[SortView alloc] initWithNib];
+    sortView.frame = CGRectMake(SCREEN_WIDTH-210, 64, 200, 155);
+    sortView.sourceArray = @[@"Name (A-Z)",@"Name (Z-A)"];
+    sortView.sortPurpose = 1;
+    [sortView defaultSetup];
+    [self.view addSubview:sortView];
+
     [_tableView registerNib:[UINib nibWithNibName:@"ListTVCell" bundle:nil] forCellReuseIdentifier:@"ListTVCell"];
 
     [self setNeedsStatusBarAppearanceUpdate];
@@ -42,13 +55,21 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    listArray = [Database fetchAllList:@"0" isUncatReq:YES];
     _tableView.dataSource = self;
     _tableView.delegate = self;
+    
+    sortView.delegate = self;
+    sortView.hidden = true;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [_tableView reloadData];
+
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    sortView.delegate = nil;
+    sortView.hidden = true;
 
 }
 
@@ -68,23 +89,6 @@
 }
 
 -(IBAction)addListClicked:(id)sender{
-//    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Name your list" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Save", nil];
-//    
-//    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-//    
-//    UITextField * alertTextField = [alert textFieldAtIndex:0];
-//    
-//    alertTextField.keyboardType = UIKeyboardTypeDefault;
-//    
-//    alertTextField.returnKeyType = UIReturnKeyDone;
-//    
-//    alertTextField.placeholder = @"enter name";
-//    
-//    alertTextField.tag = 2;
-//    
-//    alertTextField.delegate = self;
-//    
-//    [alert show];
     
     alertView = [[AlertView alloc] initWithNib];
     alertView.textView.text = @"";
@@ -96,9 +100,16 @@
     [alertView.cancelBtn1 addTarget:self action:@selector(alertViewEditAction:) forControlEvents:UIControlEventTouchUpInside];
     
     alertView.viewWithLabel.hidden = YES;
+    [alertView.textView becomeFirstResponder];
+
     [self.view addSubview:alertView];
     
 }
+
+-(IBAction)sortListClicked:(id)sender{
+    sortView.hidden = !sortView.hidden;
+}
+
 #pragma mark - UITableview Datasource & Delegate
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -228,6 +239,8 @@
     [alertView.cancelBtn1 addTarget:self action:@selector(alertViewEditAction:) forControlEvents:UIControlEventTouchUpInside];
     
     alertView.viewWithLabel.hidden = YES;
+    [alertView.textView becomeFirstResponder];
+
     [self.view addSubview:alertView];
 }
 
@@ -327,6 +340,20 @@
     [alertView removeFromSuperview];
 }
 
+#pragma mark - SortViewDelegate
 
+-(void)sortOptionSelected:(NSString *)selectedValue sortViewUse:(int)use{
+    NSSortDescriptor * sortDesc;
+
+    if ([selectedValue isEqualToString:@"Name (A-Z)"]) {
+        sortDesc = [NSSortDescriptor sortDescriptorWithKey:LIST_NAME ascending:YES selector:@selector(caseInsensitiveCompare:)];
+
+    }else if ([selectedValue isEqualToString:@"Name (Z-A)"]) {
+        sortDesc = [NSSortDescriptor sortDescriptorWithKey:LIST_NAME ascending:NO selector:@selector(caseInsensitiveCompare:)];
+        
+    }
+    listArray=[[listArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+    [_tableView reloadData];
+}
 
 @end

@@ -15,6 +15,8 @@
     CustomPicker *picker;
     IdeaListTVCell *selectedCell;
     int selectedIndex, selectedCellIndex;
+    SortView *sortView;
+
     AlertView *alertView;
 
 }
@@ -46,22 +48,30 @@
     }else{
         navBar.backgroundColor = Color_21AA68;
     }
-    navBar.notIcon.hidden = YES;
+    
+    
+    navBar.notIcon.hidden = NO;
+    [navBar.notIcon setImage:[UIImage imageNamed:@"sort"] forState:UIControlStateNormal];
+    [navBar.notIcon addTarget:self action:@selector(sortListClicked:) forControlEvents:UIControlEventTouchUpInside];
+
     [self.view addSubview:navBar];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
 
     [self setNeedsStatusBarAppearanceUpdate];
     
+    sortView = [[SortView alloc] initWithNib];
+    sortView.frame = CGRectMake(SCREEN_WIDTH-210, 64, 200, 207);
+    sortView.sortPurpose = 1;
+    sortView.sourceArray = @[@"Name (A-Z)",@"Name (Z-A)", @"Due Date"];
+    [sortView defaultSetup];
+    [self.view addSubview:sortView];
+
+    sortView.delegate = self;
+    sortView.hidden = true;
+
     ideaListArray = [NSMutableArray new];
-    [_tableView registerNib:[UINib nibWithNibName:@"IdeaListTVCell" bundle:nil] forCellReuseIdentifier:@"IdeaListTVCell"];
-
     
-    //    [Database dbOperation:[NSString stringWithFormat:@"insert into idea_master(list_id,idea_name,is_completed) values(1,'manisha',0)"]];
-
-}
--(void)viewWillAppear:(BOOL)animated
-{
     listArray = [Database fetchAllList:@"0" isUncatReq:NO];
     
     for (int i = 0; i<listArray.count; i++) {
@@ -73,6 +83,16 @@
     }
     
     ideaListArray = [Database fetchIdea:0 withListId:[[_selectedList objectForKey:LIST_ID] integerValue] isCompletedNeeded:YES];
+    
+    [_tableView registerNib:[UINib nibWithNibName:@"IdeaListTVCell" bundle:nil] forCellReuseIdentifier:@"IdeaListTVCell"];
+
+    
+    //    [Database dbOperation:[NSString stringWithFormat:@"insert into idea_master(list_id,idea_name,is_completed) values(1,'manisha',0)"]];
+
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+
     if (ideaListArray.count == 0) {
         _emptyView.hidden = NO;
         _tableView.hidden = YES;
@@ -89,6 +109,14 @@
 -(void)viewDidAppear:(BOOL)animated{
     [_tableView reloadData];
 
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    sortView.hidden = true;
+}
+
+-(IBAction)sortListClicked:(id)sender{
+    sortView.hidden = !sortView.hidden;
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -356,6 +384,26 @@
         
     }
     
+}
+
+#pragma mark - SortViewDelegate
+
+-(void)sortOptionSelected:(NSString *)selectedValue sortViewUse:(int)use{
+    NSSortDescriptor * sortDesc;
+    
+    if ([selectedValue isEqualToString:@"Name (A-Z)"]) {
+        sortDesc = [NSSortDescriptor sortDescriptorWithKey:IDEA_NAME ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        
+    }else if ([selectedValue isEqualToString:@"Name (Z-A)"]) {
+        sortDesc = [NSSortDescriptor sortDescriptorWithKey:IDEA_NAME ascending:NO selector:@selector(caseInsensitiveCompare:)];
+        
+    }else if ([selectedValue isEqualToString:@"Due Date"]) {
+        
+        sortDesc = [[NSSortDescriptor alloc] initWithKey:DUE_DATE ascending:YES];
+        
+    }
+    ideaListArray=[[ideaListArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+    [_tableView reloadData];
 }
 
 @end
