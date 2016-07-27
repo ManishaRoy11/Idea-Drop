@@ -15,11 +15,13 @@
     AlertView *alertView;
     SortView *sortView;
     int selectedIndex, selectedCellIndex;
+    NSMutableArray *defaultArray;
 
 }
 @end
 
 @implementation ListViewController
+@synthesize upArrow;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,10 +42,11 @@
     
     
     listArray = [Database fetchAllList:@"0" isUncatReq:YES];
+    defaultArray = listArray;
     
     sortView = [[SortView alloc] initWithNib];
-    sortView.frame = CGRectMake(SCREEN_WIDTH-210, 64, 200, 155);
-    sortView.sourceArray = @[@"Name (A-Z)",@"Name (Z-A)"];
+    sortView.frame = CGRectMake(SCREEN_WIDTH-210, 75, 200, 210);
+    sortView.sourceArray = @[@"Default",@"Name (A-Z)",@"Name (Z-A)"];
     sortView.sortPurpose = 1;
     [sortView defaultSetup];
     [self.view addSubview:sortView];
@@ -60,6 +63,7 @@
     
     sortView.delegate = self;
     sortView.hidden = true;
+    upArrow.hidden = true;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -70,6 +74,7 @@
 -(void)viewDidDisappear:(BOOL)animated{
     sortView.delegate = nil;
     sortView.hidden = true;
+    upArrow.hidden = true;
 
 }
 
@@ -108,6 +113,7 @@
 
 -(IBAction)sortListClicked:(id)sender{
     sortView.hidden = !sortView.hidden;
+    upArrow.hidden = !upArrow.hidden;
 }
 
 #pragma mark - UITableview Datasource & Delegate
@@ -344,15 +350,22 @@
 
 -(void)sortOptionSelected:(NSString *)selectedValue sortViewUse:(int)use{
     NSSortDescriptor * sortDesc;
+    
+    if ([selectedValue isEqualToString:@"Default"]) {
+        listArray = defaultArray;
+    }
 
     if ([selectedValue isEqualToString:@"Name (A-Z)"]) {
         sortDesc = [NSSortDescriptor sortDescriptorWithKey:LIST_NAME ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        listArray=[[listArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+
 
     }else if ([selectedValue isEqualToString:@"Name (Z-A)"]) {
         sortDesc = [NSSortDescriptor sortDescriptorWithKey:LIST_NAME ascending:NO selector:@selector(caseInsensitiveCompare:)];
+        listArray=[[listArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+
         
     }
-    listArray=[[listArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
     [_tableView reloadData];
 }
 

@@ -11,5 +11,6 @@
 
 @interface ListViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate, SortViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIImageView *upArrow;
 
 @end

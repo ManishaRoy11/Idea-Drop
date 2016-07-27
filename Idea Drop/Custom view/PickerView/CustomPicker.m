@@ -28,6 +28,12 @@
         }else{
             _table_height.constant = 52 * (_dataSource.count+1);
         }
+    }if (_pickerPurpose == Reminder_Purpose) {
+        if (_dataSource.count>4) {
+            _table_height.constant = 52 * 5;
+        }else{
+            _table_height.constant = 52 * _dataSource.count;
+        }
     }else{
     _table_height.constant = 52 * _dataSource.count;
     }

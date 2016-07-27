@@ -206,7 +206,7 @@
     static NSDateFormatter *dateFormatter;
     if(!dateFormatter){
         dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"dd-MM-yyyy";
+        dateFormatter.dateFormat = @"MM-dd-yyyy";
     }
     
     return dateFormatter;

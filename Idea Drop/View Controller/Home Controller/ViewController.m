@@ -15,6 +15,7 @@
     IdeaListTVCell *selectedCell;
     int selectedIndex, selectedCellIndex;
     AlertView *alertView;
+    BOOL isCompletedAlert;
 
 }
 @end
@@ -22,6 +23,7 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     [self.navigationController setNavigationBarHidden:YES];
     
@@ -47,6 +49,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    isCompletedAlert = false;
     listArray = [Database fetchAllList:@"0" isUncatReq:NO];
     
     for (int i = 0; i<listArray.count; i++) {
@@ -160,37 +163,19 @@
     if (selectedCellIndex == 100000) {
         IdeaListTVCell *cell = (IdeaListTVCell *)gesture.view;
         int viewTag = (int)cell.tag;
-
-        NSString* query = [NSString stringWithFormat:@"update idea_master set IS_COMPLETED = 1 where idea_id=%ld", [[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
-            
-            bool isFound = [Database dbOperation:query];
-            
-            if (isFound){
-                
-                UIApplication *app = (UIApplication *)[UIApplication sharedApplication];
-                NSArray *oldNotifications = [app scheduledLocalNotifications];
-                
-                for (int i = 0; i<oldNotifications.count; i++) {
-                    UILocalNotification * notification = [oldNotifications objectAtIndex:i];
-                    if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue] == [[notification.userInfo valueForKey:IDEA_ID] integerValue]) {
-                        [app cancelLocalNotification:notification];
-                        break;
-                    }
-                }
-                
-                if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:LIST_ID] integerValue] == CAPTURE_LIST_ID) {
-                    query = [NSString stringWithFormat:@"update idea_master set list_id = %d where idea_id=%ld",UNCATEGORIZED_LIST_ID ,[[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
-                    
-                    [Database dbOperation:query];
-                }
-                
-                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Successfully completed the idea." withY:64];
-                [ideaListArray removeObjectAtIndex:viewTag];
-                [_tableView reloadData];
-            }else{
-                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Error while completing in idea" withY:64];
-                
-            }
+        
+        isCompletedAlert = true;
+        alertView = [[AlertView alloc] initWithNib];
+        alertView.titleLbl.text = @"Complete Idea";
+        alertView.subTitleLbl.text = @"Are you sure you want to complete this idea?";
+        alertView.okBtn.tag = 1;
+        alertView.cancelBtn.tag = 0;
+        [alertView.okBtn addTarget:self action:@selector(alertViewAction:) forControlEvents:UIControlEventTouchUpInside];
+        [alertView.cancelBtn addTarget:self action:@selector(alertViewAction:) forControlEvents:UIControlEventTouchUpInside];
+        alertView.tag = viewTag;
+        
+        alertView.viewWithInput.hidden = YES;
+        [self.view addSubview:alertView];
         
         return;
     }
@@ -232,6 +217,7 @@
 #pragma mark - IBAction (Cell buttons)
 
 - (IBAction)trashPressed:(UIButton *)sender{
+    isCompletedAlert = false;
     alertView = [[AlertView alloc] initWithNib];
     alertView.titleLbl.text = @"Delete Idea";
     alertView.subTitleLbl.text = @"Are you sure you want to delete this idea?";
@@ -301,6 +287,45 @@
 
 -(void)alertViewAction:(UIButton *)buttonIndex{
     if (buttonIndex.tag == 1) {
+        
+        int viewTag = (int) alertView.tag;
+        
+        if (isCompletedAlert) {
+            NSString* query = [NSString stringWithFormat:@"update idea_master set IS_COMPLETED = 1 where idea_id=%ld", [[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
+            
+            bool isFound = [Database dbOperation:query];
+            
+            if (isFound){
+                
+                UIApplication *app = (UIApplication *)[UIApplication sharedApplication];
+                NSArray *oldNotifications = [app scheduledLocalNotifications];
+                
+                for (int i = 0; i<oldNotifications.count; i++) {
+                    UILocalNotification * notification = [oldNotifications objectAtIndex:i];
+                    if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue] == [[notification.userInfo valueForKey:IDEA_ID] integerValue]) {
+                        [app cancelLocalNotification:notification];
+                        break;
+                    }
+                }
+                
+                if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:LIST_ID] integerValue] == CAPTURE_LIST_ID) {
+                    query = [NSString stringWithFormat:@"update idea_master set list_id = %d where idea_id=%ld",UNCATEGORIZED_LIST_ID ,[[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
+                    
+                    [Database dbOperation:query];
+                }
+                
+                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Successfully completed the idea." withY:64];
+                [ideaListArray removeObjectAtIndex:viewTag];
+                [_tableView reloadData];
+            }else{
+                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Error while completing the idea" withY:64];
+                
+            }
+            [alertView removeFromSuperview];
+            return;
+        }
+        
+        
         bool isFound = [Database dbOperation:[NSString stringWithFormat:@"delete from IDEA_MASTER where idea_id=%ld",[[[ideaListArray objectAtIndex:alertView.tag] valueForKey:IDEA_ID] integerValue]]];
         
         if (isFound){
@@ -333,7 +358,6 @@
 
 -(void)pickerValue:(NSString *)selectedValue andPickerUse:(int)pickerUse{
     
-//    [self.view addGestureRecognizer:gesture];
     if (selectedValue) {
         
         if (pickerUse == Matrix_Purpose) {

@@ -15,5 +15,6 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UILabel *emptyView;
+@property (weak, nonatomic) IBOutlet UIImageView *upArrow;
 
 @end

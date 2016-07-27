@@ -25,7 +25,7 @@
     self.layer.shadowOpacity = 0.8;
     self.layer.shadowRadius = 10;
 //    self.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
-    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowColor = [UIColor grayColor].CGColor;
     [_tableView registerNib:[UINib nibWithNibName:@"IdeaListTVCell" bundle:nil] forCellReuseIdentifier:@"IdeaListTVCell"];
     _tableView.dataSource = self;
     _tableView.delegate = self;

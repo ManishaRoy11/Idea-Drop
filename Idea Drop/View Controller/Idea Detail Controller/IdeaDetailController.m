@@ -91,20 +91,11 @@
     
     static NSDateFormatter *dateFormatter;
     dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"dd-MM-yyyy";
+    dateFormatter.dateFormat = @"MM-dd-yyyy";
     dateFormatter.timeZone=[NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     
     NSString *str1 = @"Due Date : ";
     NSString *str2 = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
-    if ([str2 isEqualToString:@"01-01-1970"]) {
-        str2 = @"";
-    }else{
-        NSTimeZone *timeZone = [NSTimeZone localTimeZone];
-        [dateFormatter setTimeZone:timeZone];
-        str2 = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
-    }
-    
-
     
     NSMutableAttributedString * newString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@%@",str1, str2] attributes:attributes];
     
@@ -114,29 +105,39 @@
     [newString addAttribute:NSForegroundColorAttributeName value:Color_505050 range:NSMakeRange(str1.length+1, str2.length)];
     [newString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"AvenirNextLTPro-Regular" size:16] range:NSMakeRange(str1.length+1,str2.length)];
     
-    [attributedString appendAttributedString:newString];
-    
+    if ([str2 isEqualToString:@"01-01-1970"]) {
+        str2 = @"";
+    }else{
+//        NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+//        [dateFormatter setTimeZone:timeZone];
+        [attributedString appendAttributedString:newString];
+    }
+
     //add due time
     
     str1 = @"Due Time : ";
     str2 = [_selectedData valueForKey:DUE_TIME];
     
-    newString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@%@",str1, str2] attributes:attributes];
-    
-    [newString addAttribute:NSForegroundColorAttributeName value:Color_3D3D3D range:NSMakeRange(0, str1.length)];
-    [newString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"AvenirNextLTPro-Demi" size:16] range:NSMakeRange(0,str1.length)];
-    
-    [newString addAttribute:NSForegroundColorAttributeName value:Color_505050 range:NSMakeRange(str1.length+1, str2.length)];
-    [newString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"AvenirNextLTPro-Regular" size:16] range:NSMakeRange(str1.length+1,str2.length)];
-    
-    [attributedString appendAttributedString:newString];
-    
-    
+    if (str2.length != 0) {
+        newString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@%@",str1, str2] attributes:attributes];
+        
+        [newString addAttribute:NSForegroundColorAttributeName value:Color_3D3D3D range:NSMakeRange(0, str1.length)];
+        [newString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"AvenirNextLTPro-Demi" size:16] range:NSMakeRange(0,str1.length)];
+        
+        [newString addAttribute:NSForegroundColorAttributeName value:Color_505050 range:NSMakeRange(str1.length+1, str2.length)];
+        [newString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"AvenirNextLTPro-Regular" size:16] range:NSMakeRange(str1.length+1,str2.length)];
+        
+        [attributedString appendAttributedString:newString];
+        
+    }
+
     //add reminder
     
     str1 = @"Reminder : ";
     str2 = [_selectedData valueForKey:REMINDER];
     
+    if (str2.length != 0) {
+    
     newString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@%@",str1, str2] attributes:attributes];
     
     [newString addAttribute:NSForegroundColorAttributeName value:Color_3D3D3D range:NSMakeRange(0, str1.length)];
@@ -147,12 +148,14 @@
     
     [attributedString appendAttributedString:newString];
     
-    
+    }
     //add Repeat
     
     str1 = @"Repeat : ";
     str2 = [_selectedData valueForKey:REPEAT];
     
+    if (str2.length != 0) {
+
     newString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@%@",str1, str2] attributes:attributes];
     
     [newString addAttribute:NSForegroundColorAttributeName value:Color_3D3D3D range:NSMakeRange(0, str1.length)];
@@ -163,6 +166,7 @@
     
     [attributedString appendAttributedString:newString];
     
+    }
     self.textView.attributedText = attributedString;
     
     CGFloat fixedWidth = _textView.frame.size.width;
@@ -204,7 +208,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if ([[_selectedData valueForKey:IS_COMPLETED] isEqualToString:@"1"]) {
-        return 1;
+        return 3;
     }
     
     return 5;
@@ -220,7 +224,11 @@
     //cell for menu
     NSString *CellIdentifier;
     if ([[_selectedData valueForKey:IS_COMPLETED] isEqualToString:@"1"]) {
-        CellIdentifier=[@"Cell" stringByAppendingString:@"3"];
+        if (indexPath.row == 2) {
+            CellIdentifier=[@"Cell" stringByAppendingString:@"3"];
+        }else{
+            CellIdentifier=[@"Cell" stringByAppendingString:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+        }
     }
     else
         CellIdentifier=[@"Cell" stringByAppendingString:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
@@ -237,6 +245,46 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if ([[_selectedData valueForKey:IS_COMPLETED] isEqualToString:@"1"]) {
         
+        if (indexPath.row == 0){
+            
+            if (_listArray.count==0) {
+                [ToastPopup toastInView:self.view withText:@"First create new list." withY:64];
+                return;
+            }
+            
+            picker = [[CustomPicker alloc] initWithNib];
+            NSMutableArray *array = [NSMutableArray new];
+            
+            for (int i = 0; i<_listArray.count; i++) {
+                NSDictionary * dic = [_listArray objectAtIndex:i];
+                [array addObject:[dic valueForKey:LIST_NAME]];
+            }
+            
+            picker.pickerPurpose = MoveTo_Purpose;
+            
+            picker.dataSource = array;
+            [picker defaultSetup];
+            picker.delegate = self;
+            [self.view addSubview:picker];
+            
+        }else if (indexPath.row == 1){
+            
+            picker = [[CustomPicker alloc] initWithNib];
+            NSMutableArray *array = [NSMutableArray new];
+            
+            [array addObject:@"Do First - Action"];
+            [array addObject:@"Do Next - Action"];
+            [array addObject:@"Do Later - Action"];
+            [array addObject:@"Don't Do - No Action"];
+            picker.pickerPurpose = Matrix_Purpose;
+            
+            picker.dataSource = array;
+            [picker defaultSetup];
+            picker.delegate = self;
+            [self.view addSubview:picker];
+            
+        }else if (indexPath.row == 2){
+        
         alertView = [[AlertView alloc] initWithNib];
         alertView.titleLbl.text = @"Delete Idea";
         alertView.subTitleLbl.text = @"Are you sure you want to delete this idea?";
@@ -246,6 +294,7 @@
         [alertView.cancelBtn addTarget:self action:@selector(alertViewAction:) forControlEvents:UIControlEventTouchUpInside];
         alertView.viewWithInput.hidden = YES;
         [self.view addSubview:alertView];
+        }
         
     }else{
         if (indexPath.row == 0){
@@ -393,6 +442,8 @@
             }
             bool isFound = [Database dbOperation:query];
             if (isFound){
+                [self.menuContainerViewController.centerViewController popViewControllerAnimated:YES];
+
                 [ToastPopup toastInView:APP_DELEGATE.window withText:[NSString stringWithFormat:@"Successfully added in '%@' matrix.",selectedValue] withY:64];
             }else{
                 [ToastPopup toastInView:APP_DELEGATE.window withText:@"Error while adding in matrix" withY:64];

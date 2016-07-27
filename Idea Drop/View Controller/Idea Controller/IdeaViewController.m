@@ -18,11 +18,14 @@
     SortView *sortView;
 
     AlertView *alertView;
-
+    BOOL isCompletedAlert;
+    NSMutableArray *defaultArray;
 }
 @end
 
 @implementation IdeaViewController
+@synthesize upArrow;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -61,14 +64,15 @@
     [self setNeedsStatusBarAppearanceUpdate];
     
     sortView = [[SortView alloc] initWithNib];
-    sortView.frame = CGRectMake(SCREEN_WIDTH-210, 64, 200, 207);
+    sortView.frame = CGRectMake(SCREEN_WIDTH-205, 75, 200, 260);
     sortView.sortPurpose = 1;
-    sortView.sourceArray = @[@"Name (A-Z)",@"Name (Z-A)", @"Due Date"];
+    sortView.sourceArray = @[@"Default",@"Name (A-Z)",@"Name (Z-A)", @"Due Date"];
     [sortView defaultSetup];
     [self.view addSubview:sortView];
 
     sortView.delegate = self;
     sortView.hidden = true;
+    upArrow.hidden = true;
 
     ideaListArray = [NSMutableArray new];
     
@@ -83,6 +87,7 @@
     }
     
     ideaListArray = [Database fetchIdea:0 withListId:[[_selectedList objectForKey:LIST_ID] integerValue] isCompletedNeeded:YES];
+    defaultArray = ideaListArray;
     
     [_tableView registerNib:[UINib nibWithNibName:@"IdeaListTVCell" bundle:nil] forCellReuseIdentifier:@"IdeaListTVCell"];
 
@@ -92,7 +97,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-
+    isCompletedAlert = false;
     if (ideaListArray.count == 0) {
         _emptyView.hidden = NO;
         _tableView.hidden = YES;
@@ -113,10 +118,12 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     sortView.hidden = true;
+    upArrow.hidden = true;
 }
 
 -(IBAction)sortListClicked:(id)sender{
     sortView.hidden = !sortView.hidden;
+    upArrow.hidden = !upArrow.hidden;
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -204,44 +211,23 @@
     if (selectedCellIndex == 100000) {
         IdeaListTVCell *cell = (IdeaListTVCell *)gesture.view;
         int viewTag = (int)cell.tag;
-        if ([[[ideaListArray objectAtIndex:(int)cell.tag] valueForKey:IS_COMPLETED] isEqualToString:@"0"]) {
-            NSString* query = [NSString stringWithFormat:@"update idea_master set IS_COMPLETED = 1 where idea_id=%ld", [[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
-            
-            bool isFound = [Database dbOperation:query];
-            
-            if (isFound){
-                
-                UIApplication *app = (UIApplication *)[UIApplication sharedApplication];
-                NSArray *oldNotifications = [app scheduledLocalNotifications];
-                
-                for (int i = 0; i<oldNotifications.count; i++) {
-                    UILocalNotification * notification = [oldNotifications objectAtIndex:i];
-                    if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue] == [[notification.userInfo valueForKey:IDEA_ID] integerValue]) {
-                        [app cancelLocalNotification:notification];
-                        break;
-                    }
-                }
-                
-                if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:LIST_ID] integerValue] == CAPTURE_LIST_ID) {
-                    query = [NSString stringWithFormat:@"update idea_master set list_id = %d where idea_id=%ld",UNCATEGORIZED_LIST_ID ,[[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
-                    
-                    [Database dbOperation:query];
-                    [ideaListArray removeObjectAtIndex:viewTag];
-                    
-                }else{
-                    [[ideaListArray objectAtIndex:viewTag] setValue:@"1" forKey:IS_COMPLETED];
-                    
-                }
-                
-                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Successfully completed the idea." withY:64];
-                [_tableView reloadData];
-            }else{
-                [ToastPopup toastInView:APP_DELEGATE.window withText:@"Error while completing in idea" withY:64];
-                
-            }
-            
-            return;
+        
+        if ([[[ideaListArray objectAtIndex:(int)alertView.tag] valueForKey:IS_COMPLETED] isEqualToString:@"0"]) {
+
+        isCompletedAlert = true;
+        alertView = [[AlertView alloc] initWithNib];
+        alertView.titleLbl.text = @"Complete Idea";
+        alertView.subTitleLbl.text = @"Are you sure you want to complete this idea?";
+        alertView.okBtn.tag = 1;
+        alertView.cancelBtn.tag = 0;
+        [alertView.okBtn addTarget:self action:@selector(alertViewAction:) forControlEvents:UIControlEventTouchUpInside];
+        [alertView.cancelBtn addTarget:self action:@selector(alertViewAction:) forControlEvents:UIControlEventTouchUpInside];
+        alertView.tag = viewTag;
+        
+        alertView.viewWithInput.hidden = YES;
+        [self.view addSubview:alertView];
         }
+        return;
     }
     
     IdeaListTVCell *cell = (IdeaListTVCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedCellIndex inSection:0]];
@@ -278,13 +264,12 @@
         }];
     }
 
-    
 }
 
 #pragma mark - IBAction (Cell buttons)
 
 - (IBAction)trashPressed:(UIButton *)sender{
-    
+    isCompletedAlert = false;
     alertView = [[AlertView alloc] initWithNib];
     alertView.titleLbl.text = @"Delete Idea";
     alertView.subTitleLbl.text = @"Are you sure you want to delete this idea?";
@@ -354,6 +339,47 @@
 
 -(void)alertViewAction:(UIButton *)buttonIndex{
     if (buttonIndex.tag == 1) {
+        
+        if (isCompletedAlert) {
+            int viewTag = (int)alertView.tag;
+                NSString* query = [NSString stringWithFormat:@"update idea_master set IS_COMPLETED = 1 where idea_id=%ld", [[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
+                
+                bool isFound = [Database dbOperation:query];
+                
+                if (isFound){
+                    
+                    UIApplication *app = (UIApplication *)[UIApplication sharedApplication];
+                    NSArray *oldNotifications = [app scheduledLocalNotifications];
+                    
+                    for (int i = 0; i<oldNotifications.count; i++) {
+                        UILocalNotification * notification = [oldNotifications objectAtIndex:i];
+                        if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue] == [[notification.userInfo valueForKey:IDEA_ID] integerValue]) {
+                            [app cancelLocalNotification:notification];
+                            break;
+                        }
+                    }
+                    
+                    if ([[[ideaListArray objectAtIndex:viewTag] valueForKey:LIST_ID] integerValue] == CAPTURE_LIST_ID) {
+                        query = [NSString stringWithFormat:@"update idea_master set list_id = %d where idea_id=%ld",UNCATEGORIZED_LIST_ID ,[[[ideaListArray objectAtIndex:viewTag] valueForKey:IDEA_ID] integerValue]];
+                        
+                        [Database dbOperation:query];
+                        [ideaListArray removeObjectAtIndex:viewTag];
+                        
+                    }else{
+                        [[ideaListArray objectAtIndex:viewTag] setValue:@"1" forKey:IS_COMPLETED];
+                        
+                    }
+                    
+                    [ToastPopup toastInView:APP_DELEGATE.window withText:@"Successfully completed the idea." withY:64];
+                    [_tableView reloadData];
+                }else{
+                    [ToastPopup toastInView:APP_DELEGATE.window withText:@"Error while completing the idea" withY:64];
+                    
+                }
+            [alertView removeFromSuperview];
+                
+                return;
+            }
         bool isFound = [Database dbOperation:[NSString stringWithFormat:@"delete from IDEA_MASTER where idea_id=%ld",[[[ideaListArray objectAtIndex:alertView.tag] valueForKey:IDEA_ID] integerValue]]];
         
         if (isFound){
@@ -438,18 +464,27 @@
 -(void)sortOptionSelected:(NSString *)selectedValue sortViewUse:(int)use{
     NSSortDescriptor * sortDesc;
     
+    if ([selectedValue isEqualToString:@"Default"]) {
+        ideaListArray = defaultArray;
+    }
+    
     if ([selectedValue isEqualToString:@"Name (A-Z)"]) {
         sortDesc = [NSSortDescriptor sortDescriptorWithKey:IDEA_NAME ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        ideaListArray=[[ideaListArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+
         
     }else if ([selectedValue isEqualToString:@"Name (Z-A)"]) {
         sortDesc = [NSSortDescriptor sortDescriptorWithKey:IDEA_NAME ascending:NO selector:@selector(caseInsensitiveCompare:)];
+        ideaListArray=[[ideaListArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+
         
     }else if ([selectedValue isEqualToString:@"Due Date"]) {
         
         sortDesc = [[NSSortDescriptor alloc] initWithKey:DUE_DATE ascending:YES];
+        ideaListArray=[[ideaListArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
+
         
     }
-    ideaListArray=[[ideaListArray sortedArrayUsingDescriptors:@[sortDesc]] mutableCopy];
     [_tableView reloadData];
 }
 

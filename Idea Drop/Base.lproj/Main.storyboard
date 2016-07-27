@@ -237,11 +237,21 @@
                                 <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </tableView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="popUp_up.png" translatesAutoresizingMaskIntoConstraints="NO" id="W3n-c5-kzg">
+                                <rect key="frame" x="200" y="64" width="20" height="12"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="12" id="7PW-aV-sFn"/>
+                                    <constraint firstAttribute="width" constant="20" id="nDW-6A-efh"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.91764705882352937" green="0.91764705882352937" blue="0.91764705882352937" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="r8Z-hA-Z0V" firstAttribute="top" secondItem="V8q-uS-UCc" secondAttribute="bottom" constant="44" id="BB9-TC-npU"/>
                             <constraint firstItem="khg-Bd-sxn" firstAttribute="top" secondItem="r8Z-hA-Z0V" secondAttribute="bottom" id="BMv-oD-ac4"/>
+                            <constraint firstAttribute="trailing" secondItem="W3n-c5-kzg" secondAttribute="trailing" constant="100" id="Cdd-eS-saX"/>
+                            <constraint firstItem="W3n-c5-kzg" firstAttribute="top" secondItem="V8q-uS-UCc" secondAttribute="bottom" constant="44" id="USY-Z6-WNY"/>
                             <constraint firstAttribute="trailing" secondItem="r8Z-hA-Z0V" secondAttribute="trailing" id="Xpc-pD-Zqd"/>
                             <constraint firstItem="r8Z-hA-Z0V" firstAttribute="leading" secondItem="DXb-qW-97Q" secondAttribute="leading" id="Z73-Yh-A1E"/>
                         </constraints>
@@ -249,6 +259,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="r8Z-hA-Z0V" id="OZy-en-QHy"/>
+                        <outlet property="upArrow" destination="W3n-c5-kzg" id="RDz-ND-UA3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c18-jV-ijy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -630,14 +641,24 @@
                                 <color key="textColor" red="0.23921568627450979" green="0.23921568627450979" blue="0.23921568627450979" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="popUp_up.png" translatesAutoresizingMaskIntoConstraints="NO" id="13S-hJ-sKt">
+                                <rect key="frame" x="285" y="64" width="20" height="12"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="12" id="1kk-OW-2jg"/>
+                                    <constraint firstAttribute="width" constant="20" id="ZPb-V5-pFS"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.91764705882352937" green="0.91764705882352937" blue="0.91764705882352937" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="zgY-I6-2UF" secondAttribute="trailing" id="bX0-51-vBO"/>
                             <constraint firstItem="gbT-kh-idF" firstAttribute="top" secondItem="zgY-I6-2UF" secondAttribute="bottom" id="d3Q-5Z-KUZ"/>
                             <constraint firstItem="2oh-bj-BbG" firstAttribute="leading" secondItem="eI6-LS-sui" secondAttribute="leading" id="iyV-cb-30O"/>
+                            <constraint firstAttribute="trailing" secondItem="13S-hJ-sKt" secondAttribute="trailing" constant="15" id="lz0-oe-K0n"/>
                             <constraint firstItem="2oh-bj-BbG" firstAttribute="top" secondItem="fqf-5i-pMM" secondAttribute="bottom" constant="44" id="mAF-vo-FeK"/>
                             <constraint firstItem="zgY-I6-2UF" firstAttribute="top" secondItem="fqf-5i-pMM" secondAttribute="bottom" constant="44" id="pD1-0y-FnR"/>
+                            <constraint firstItem="13S-hJ-sKt" firstAttribute="top" secondItem="fqf-5i-pMM" secondAttribute="bottom" constant="44" id="rcs-66-2gO"/>
                             <constraint firstItem="gbT-kh-idF" firstAttribute="top" secondItem="2oh-bj-BbG" secondAttribute="bottom" constant="182" id="wZG-B0-jLm"/>
                             <constraint firstAttribute="trailing" secondItem="2oh-bj-BbG" secondAttribute="trailing" id="wvw-Zn-zhH"/>
                             <constraint firstItem="zgY-I6-2UF" firstAttribute="leading" secondItem="eI6-LS-sui" secondAttribute="leading" id="x6H-4R-vSb"/>
@@ -647,6 +668,7 @@
                     <connections>
                         <outlet property="emptyView" destination="2oh-bj-BbG" id="E1Q-5Z-w9g"/>
                         <outlet property="tableView" destination="zgY-I6-2UF" id="x75-NV-umP"/>
+                        <outlet property="upArrow" destination="13S-hJ-sKt" id="ycc-sC-Aam"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SPY-TW-JL4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1032,6 +1054,7 @@
         <image name="matrix" width="20" height="20"/>
         <image name="new idea" width="27" height="28"/>
         <image name="pen" width="23" height="23"/>
+        <image name="popUp_up.png" width="47" height="24"/>
         <image name="privacy" width="23" height="27"/>
         <image name="read idea" width="25" height="17"/>
         <image name="trash" width="19" height="24"/>

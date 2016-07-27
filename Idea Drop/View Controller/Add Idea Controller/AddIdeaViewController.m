@@ -81,7 +81,7 @@
 #pragma mark - UITableview Datasource & Delegate
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 5;
+    return 4;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -171,7 +171,7 @@
             if (_selectedData) {
                 static NSDateFormatter *dateFormatter;
                 dateFormatter = [NSDateFormatter new];
-                dateFormatter.dateFormat = @"dd-MM-yyyy";
+                dateFormatter.dateFormat = @"MM-dd-yyyy";
                 dateFormatter.timeZone=[NSTimeZone timeZoneWithAbbreviation:@"GMT"];
 
                 NSString *str = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
@@ -179,8 +179,8 @@
                 if (![str isEqualToString:@"01-01-1970"]) {
                     _selectedDate = [_selectedData valueForKey:DUE_DATE];
                     
-                    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
-                    [dateFormatter setTimeZone:timeZone];
+//                    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+//                    [dateFormatter setTimeZone:timeZone];
                     str = [dateFormatter stringFromDate:[_selectedData valueForKey:DUE_DATE]];
                     
                     [cell.btn setTitle:str forState:UIControlStateNormal];
@@ -287,14 +287,6 @@
 
 -(void)clearSelectedCell:(UIButton *)sender{
     
-//    Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-//
-//    Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
-//    
-//    ReminderCell *reminderCell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
-//    
-//    ReminderCell *repeatCell =  (ReminderCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
-    
     Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView viewWithTag:1001];
     
     Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView viewWithTag:1002];
@@ -308,45 +300,16 @@
         _selectedDate = nil;
         dateCell.refrshBtn.hidden = true;
 
-//        [timeCell.btn setTitle:@"" forState:UIControlStateNormal];
-//
-//        timeCell.refrshBtn.hidden = true;
-//        reminderCell.refrshBtn.hidden = true;
-//        repeatCell.refrshBtn.hidden = true;
-//        
-//        [reminderCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
-//        [reminderCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
-//        reminderCell.sliderBtn.selected = false;
-//        
-//        [repeatCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
-//        [repeatCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
-//        repeatCell.sliderBtn.selected = false;
-
-    
     }else if (sender.tag == 2){
         [timeCell.btn setTitle:@"" forState:UIControlStateNormal];
         
         timeCell.refrshBtn.hidden = true;
-        
-//        reminderCell.refrshBtn.hidden = true;
-//        repeatCell.refrshBtn.hidden = true;
-//        
-//        [reminderCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
-//        [reminderCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
-//        reminderCell.sliderBtn.selected = false;
-//        
-//        [repeatCell.valueBtn setTitle:@"Select" forState:UIControlStateNormal];
-//        [repeatCell.valueBtn setTitleColor:Color_9E9E9E forState:UIControlStateNormal];
-//        repeatCell.sliderBtn.selected = false;
         
     }else if (sender.tag == 3){
         [self sliderPressed:reminderCell.sliderBtn];
 
         reminderCell.refrshBtn.hidden = true;
 
-//        [self sliderPressed:repeatCell.sliderBtn];
-//
-//        repeatCell.refrshBtn.hidden = true;
         
     }else if (sender.tag == 4){
         [self sliderPressed:repeatCell.sliderBtn];
@@ -406,7 +369,9 @@
     NSMutableArray *array = [NSMutableArray new];
     
     if (sender.tag == 3) {
-        
+        [array addObject:@"5 minutes before"];
+        [array addObject:@"15 minutes before"];
+        [array addObject:@"30 minutes before"];
         [array addObject:@"1 hour before"];
         [array addObject:@"6 hours before"];
         [array addObject:@"12 hours before"];
@@ -458,12 +423,11 @@
     }
 }
 
-- (IBAction)savePressed:(UIButton *)sender {
+- (IBAction)savePressed:(UIButton *)sender{
     TextViewCell *textCell =  (TextViewCell *)[_tableView viewWithTag:1000];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView viewWithTag:1001];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView viewWithTag:1002];[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     ReminderCell *reminderCell =  (ReminderCell *)[_tableView viewWithTag:1003];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
-    ReminderCell *repeatCell =  (ReminderCell *)[_tableView viewWithTag:1004];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
     
     if ([textCell.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length==0) {
         [ToastPopup toastInView:self.view withText:@"Please enter your idea." withY:64];
@@ -489,20 +453,6 @@
         [ToastPopup toastInView:self.view withText:@"Please select reminder details." withY:64];
         return;
         
-    }else if (repeatCell.sliderBtn.selected){
-        
-        if (!reminderCell.sliderBtn.selected) {
-            [ToastPopup toastInView:self.view withText:@"Please activate the reminder switch." withY:64];
-            return;
-            
-        }else if (reminderCell.sliderBtn.selected && ([[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"])){
-            [ToastPopup toastInView:self.view withText:@"Please select reminder details." withY:64];
-            return;
-            
-        }else if ([[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]){
-            [ToastPopup toastInView:self.view withText:@"Please select repeat details." withY:64];
-            return;
-        }
     }
     //add idea
     __block NSMutableDictionary *dic;
@@ -515,15 +465,15 @@
                        [[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate,
                        [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]],
                        [[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal],
-                       [[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal],
+                       "",
                        [_selectedData valueForKey:IDEA_ID],nil];
         }else{
             response =[db executeUpdate:@"insert into IDEA_MASTER (LIST_ID, IDEA_NAME, DUE_DATE , DUE_TIME, REMINDER, REPEAT, IS_COMPLETED) values (1, ?, ?, ?, ?, ?, 0 )", textCell.textView.text,
-                   [[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate,
-                   [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]],
-                   [[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal],
-                   [[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal],nil];
-
+                       [[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate,
+                       [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]],
+                       [[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal],
+                       @"",nil];
+            
         }
         if(!response)
         {
@@ -568,20 +518,25 @@
                 timeStr = [timeStr substringToIndex:5];
                 dateStr = [dateStr stringByReplacingOccurrencesOfString:[[dateStr substringToIndex:16] substringFromIndex:11] withString:timeStr];
                 _selectedDate = [dateFormatter dateFromString:dateStr];
-
+                
                 [dic setObject:textCell.textView.text forKey:IDEA_NAME];
                 [dic setObject:[[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate==nil?@"":_selectedDate forKey:DUE_DATE];
                 [dic setObject:[COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]] forKey:DUE_TIME];
                 [dic setObject:[[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal] forKey:REMINDER];
-                [dic setObject:[[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal] forKey:REPEAT];
-                               
+                
                 UILocalNotification *alarm = [[UILocalNotification alloc] init];
                 alarm.timeZone = [NSTimeZone localTimeZone];
                 
                 if (alarm)
                 {
                     
-                    if ([[dic valueForKey:REMINDER] isEqualToString:@"1 hour before"]) {
+                    if ([[dic valueForKey:REMINDER] isEqualToString:@"5 minutes before"]) {
+                        alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-300];
+                    }else if ([[dic valueForKey:REMINDER] isEqualToString:@"15 minutes before"]) {
+                        alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-900];
+                    }else if ([[dic valueForKey:REMINDER] isEqualToString:@"30 minutes before"]) {
+                        alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-1800];
+                    }else if ([[dic valueForKey:REMINDER] isEqualToString:@"1 hour before"]) {
                         alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*1];
                     }else if ([[dic valueForKey:REMINDER] isEqualToString:@"6 hours before"]) {
                         alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*6];
@@ -592,32 +547,15 @@
                     }else if ([[dic valueForKey:REMINDER] isEqualToString:@"1 week before"]) {
                         alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*168];
                     }
-                    
-//                    NSDate *date = [NSDate date];
-//                    if ([date compare:alarm.fireDate] == NSOrderedAscending) {
-//                        return;  // fire date
-//                    }
-                    
-                    if ([[dic valueForKey:REPEAT] isEqualToString:@"Hourly"]) {
-                        alarm.repeatInterval = kCFCalendarUnitHour;
-                    }else if ([[dic valueForKey:REPEAT] isEqualToString:@"Daily"]) {
-                        alarm.repeatInterval = kCFCalendarUnitDay;
-                    }else if ([[dic valueForKey:REPEAT] isEqualToString:@"Weekly"]) {
-                        alarm.repeatInterval = kCFCalendarUnitWeek;
-                    }else if ([[dic valueForKey:REPEAT] isEqualToString:@"Monthly"]) {
-                        alarm.repeatInterval = kCFCalendarUnitMonth;
-                    }else
-                        alarm.repeatInterval = 0;
-                    
-//                    alarm.fireDate = [_selectedDate dateByAddingTimeInterval:120];
-//                    alarm.repeatInterval = kCFCalendarUnitMinute;
+
+                    alarm.repeatInterval = 0;
                     
                     alarm.soundName = UILocalNotificationDefaultSoundName;
                     alarm.alertTitle = @"Idea Drop";
                     
-                    dateFormatter.dateFormat = @"dd-MM-yyyy hh-mm a";
-                    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
-                    [dateFormatter setTimeZone:timeZone];
+                    dateFormatter.dateFormat = @"MM-dd-yyyy hh-mm a";
+//                    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+//                    [dateFormatter setTimeZone:timeZone];
                     
                     alarm.alertBody = [NSString stringWithFormat:@"Your upcoming event is '%@'\nDue date: %@",[dic valueForKey:IDEA_NAME], [dateFormatter stringFromDate:[dic valueForKey:DUE_DATE]]];
                     
@@ -627,7 +565,7 @@
                     alarm.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
                     [app scheduleLocalNotification:alarm];
                 }
-
+                
             }
             
             [ToastPopup toastInView:self.view withText:@"Successfully added idea in 'Capture List'" withY:64];
@@ -638,17 +576,200 @@
             [self cancelPressed:nil];
         }
     }];
-
+    
 }
+
+/*{
+ TextViewCell *textCell =  (TextViewCell *)[_tableView viewWithTag:1000];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+ Date_TimeCell *dateCell =  (Date_TimeCell *)[_tableView viewWithTag:1001];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+ Date_TimeCell *timeCell =  (Date_TimeCell *)[_tableView viewWithTag:1002];[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+ ReminderCell *reminderCell =  (ReminderCell *)[_tableView viewWithTag:1003];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+ ReminderCell *repeatCell =  (ReminderCell *)[_tableView viewWithTag:1004];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:0]];
+ 
+ if ([textCell.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length==0) {
+ [ToastPopup toastInView:self.view withText:@"Please enter your idea." withY:64];
+ return;
+ 
+ }else if ([Database checkAlreadyEsistingRec:[NSString stringWithFormat:@"select count(IDEA_NAME) from IDEA_MASTER where IDEA_NAME='%@'",textCell.textView.text]] && ! _selectedData){
+ [ToastPopup toastInView:self.view withText:@"idea with same description already existing" withY:64];
+ return;
+ 
+ }else if (([dateCell.btn titleForState:UIControlStateNormal].length>0) && ([timeCell.btn titleForState:UIControlStateNormal].length == 0)){
+ [ToastPopup toastInView:self.view withText:@"Please give due time." withY:64];
+ return;
+ 
+ }else if (([timeCell.btn titleForState:UIControlStateNormal].length > 0) && ([dateCell.btn titleForState:UIControlStateNormal].length == 0)){
+ [ToastPopup toastInView:self.view withText:@"Please give due date." withY:64];
+ return;
+ 
+ }else if (reminderCell.sliderBtn.selected && ([dateCell.btn titleForState:UIControlStateNormal].length==0)){
+ [ToastPopup toastInView:self.view withText:@"Please give due time." withY:64];
+ return;
+ 
+ }else if (reminderCell.sliderBtn.selected && ([[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"])){
+ [ToastPopup toastInView:self.view withText:@"Please select reminder details." withY:64];
+ return;
+ 
+ }else if (repeatCell.sliderBtn.selected){
+ 
+ if (!reminderCell.sliderBtn.selected) {
+ [ToastPopup toastInView:self.view withText:@"Please activate the reminder switch." withY:64];
+ return;
+ 
+ }else if (reminderCell.sliderBtn.selected && ([[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"])){
+ [ToastPopup toastInView:self.view withText:@"Please select reminder details." withY:64];
+ return;
+ 
+ }else if ([[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]){
+ [ToastPopup toastInView:self.view withText:@"Please select repeat details." withY:64];
+ return;
+ }
+ }
+ //add idea
+ __block NSMutableDictionary *dic;
+ FMDatabaseQueue *queueObj=[Database getDBQueue];
+ __block BOOL response;
+ [queueObj inTransaction:^(FMDatabase *db, BOOL *rollback) {
+ if (_selectedData) {
+ response =[db executeUpdate:@"update IDEA_MASTER set LIST_ID=?, IDEA_NAME=?, DUE_DATE=?, DUE_TIME=?, REMINDER=?, REPEAT=? where idea_id=?",[_selectedData valueForKey:LIST_ID],
+ textCell.textView.text,
+ [[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate,
+ [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]],
+ [[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal],
+ [[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal],
+ [_selectedData valueForKey:IDEA_ID],nil];
+ }else{
+ response =[db executeUpdate:@"insert into IDEA_MASTER (LIST_ID, IDEA_NAME, DUE_DATE , DUE_TIME, REMINDER, REPEAT, IS_COMPLETED) values (1, ?, ?, ?, ?, ?, 0 )", textCell.textView.text,
+ [[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate,
+ [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]],
+ [[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal],
+ [[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal],nil];
+ 
+ }
+ if(!response)
+ {
+ NSLog(@"Record %@",[db lastError].localizedDescription);
+ }
+ if (response) {
+ 
+ UIApplication *app = (UIApplication *)[UIApplication sharedApplication];
+ NSArray *oldNotifications = [app scheduledLocalNotifications];
+ if (_selectedData) {
+ for (int i = 0; i<oldNotifications.count; i++) {
+ UILocalNotification * notification = [oldNotifications objectAtIndex:i];
+ if ([[_selectedData valueForKey:IDEA_ID] integerValue] == [[notification.userInfo valueForKey:IDEA_ID] integerValue]) {
+ [app cancelLocalNotification:notification];
+ return;
+ }
+ }
+ }
+ 
+ if (reminderCell.sliderBtn.selected) {
+ 
+ dic = [NSMutableDictionary new];
+ 
+ if (_selectedData) {
+ [dic setObject:[_selectedData objectForKey:IDEA_ID] forKey:IDEA_ID];
+ }else{
+ [dic setObject:[NSString stringWithFormat:@"%d",(int)[db lastInsertRowId]] forKey:IDEA_ID];
+ }
+ 
+ static NSDateFormatter *dateFormatter;
+ dateFormatter = [NSDateFormatter new];
+ dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm";
+ dateFormatter.timeZone=[NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+ NSString *dateStr = [dateFormatter stringFromDate:_selectedDate];
+ NSString *timeStr = [COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]];
+ 
+ if ([timeStr containsString:@"PM"] && ![[timeStr substringToIndex:2] isEqualToString:@"12"]) {
+ int x = [[timeStr substringToIndex:2] intValue];
+ x = x+12;
+ timeStr = [timeStr stringByReplacingOccurrencesOfString:[timeStr substringToIndex:2] withString:[NSString stringWithFormat:@"%d",x]];
+ }
+ timeStr = [timeStr substringToIndex:5];
+ dateStr = [dateStr stringByReplacingOccurrencesOfString:[[dateStr substringToIndex:16] substringFromIndex:11] withString:timeStr];
+ _selectedDate = [dateFormatter dateFromString:dateStr];
+ 
+ [dic setObject:textCell.textView.text forKey:IDEA_NAME];
+ [dic setObject:[[COMMON_METHODS isStringNull:[dateCell.btn titleForState:UIControlStateNormal]] isEqualToString:@""]?@"":_selectedDate==nil?@"":_selectedDate forKey:DUE_DATE];
+ [dic setObject:[COMMON_METHODS isStringNull:[timeCell.btn titleForState:UIControlStateNormal]] forKey:DUE_TIME];
+ [dic setObject:[[reminderCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[reminderCell.valueBtn titleForState:UIControlStateNormal] forKey:REMINDER];
+ [dic setObject:[[repeatCell.valueBtn titleForState:UIControlStateNormal] isEqualToString:@"Select"]?@"":[repeatCell.valueBtn titleForState:UIControlStateNormal] forKey:REPEAT];
+ 
+ UILocalNotification *alarm = [[UILocalNotification alloc] init];
+ alarm.timeZone = [NSTimeZone localTimeZone];
+ 
+ if (alarm)
+ {
+ 
+ if ([[dic valueForKey:REMINDER] isEqualToString:@"1 hour before"]) {
+ alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*1];
+ }else if ([[dic valueForKey:REMINDER] isEqualToString:@"6 hours before"]) {
+ alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*6];
+ }else if ([[dic valueForKey:REMINDER] isEqualToString:@"12 hours before"]) {
+ alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*12];
+ }else if ([[dic valueForKey:REMINDER] isEqualToString:@"1 day before"]) {
+ alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*24];
+ }else if ([[dic valueForKey:REMINDER] isEqualToString:@"1 week before"]) {
+ alarm.fireDate = [_selectedDate dateByAddingTimeInterval:-3600*168];
+ }
+ 
+ //                    NSDate *date = [NSDate date];
+ //                    if ([date compare:alarm.fireDate] == NSOrderedAscending) {
+ //                        return;  // fire date
+ //                    }
+ 
+ if ([[dic valueForKey:REPEAT] isEqualToString:@"Hourly"]) {
+ alarm.repeatInterval = kCFCalendarUnitHour;
+ }else if ([[dic valueForKey:REPEAT] isEqualToString:@"Daily"]) {
+ alarm.repeatInterval = kCFCalendarUnitDay;
+ }else if ([[dic valueForKey:REPEAT] isEqualToString:@"Weekly"]) {
+ alarm.repeatInterval = kCFCalendarUnitWeek;
+ }else if ([[dic valueForKey:REPEAT] isEqualToString:@"Monthly"]) {
+ alarm.repeatInterval = kCFCalendarUnitMonth;
+ }else
+ alarm.repeatInterval = 0;
+ 
+ //                    alarm.fireDate = [_selectedDate dateByAddingTimeInterval:120];
+ //                    alarm.repeatInterval = kCFCalendarUnitMinute;
+ 
+ alarm.soundName = UILocalNotificationDefaultSoundName;
+ alarm.alertTitle = @"Idea Drop";
+ 
+ dateFormatter.dateFormat = @"dd-MM-yyyy hh-mm a";
+ NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+ [dateFormatter setTimeZone:timeZone];
+ 
+ alarm.alertBody = [NSString stringWithFormat:@"Your upcoming event is '%@'\nDue date: %@",[dic valueForKey:IDEA_NAME], [dateFormatter stringFromDate:[dic valueForKey:DUE_DATE]]];
+ 
+ alarm.userInfo = dic;
+ 
+ alarm.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"]; //[NSTimeZone defaultTimeZone];
+ alarm.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+ [app scheduleLocalNotification:alarm];
+ }
+ 
+ }
+ 
+ [ToastPopup toastInView:self.view withText:@"Successfully added idea in 'Capture List'" withY:64];
+ [self cancelPressed:nil];
+ 
+ }else{
+ [ToastPopup toastInView:self.view withText:@"Something went wrong." withY:64];
+ [self cancelPressed:nil];
+ }
+ }];
+ 
+ }*/
 
 #pragma mark - PickerDelegate
 
 -(void)pickerValue:(NSString *)selectedValue andPickerUse:(int)pickerUse{
-    
+ 
     [self.view addGestureRecognizer:gesture];
     if (selectedValue) {
         ReminderCell *cell ;
-        
+ 
         if (pickerUse == Reminder_Purpose) {
             cell =  (ReminderCell *)[_tableView viewWithTag:1003];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
         }else{
@@ -656,7 +777,7 @@
         }
         cell.refrshBtn.hidden = false;
         [cell.valueBtn setTitle:selectedValue forState:UIControlStateNormal];
-        
+ 
     }
 
 }
@@ -664,7 +785,7 @@
 #pragma mark - ClockDelegate
 
 -(void)clockTime:(NSString *)timeStr{
-    
+ 
     Date_TimeCell *cell =  (Date_TimeCell *)[_tableView viewWithTag:1002];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     [cell.btn setTitle:timeStr forState:UIControlStateNormal];
     cell.refrshBtn.hidden = false;
@@ -676,19 +797,19 @@
 
 -(void)calendarDate:(NSDate *)date{
     _selectedDate = date;
-    
+ 
     static NSDateFormatter *dateFormatter;
     dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"dd-MM-yyyy";
-    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
-    [dateFormatter setTimeZone:timeZone];
-    
+    dateFormatter.dateFormat = @"MM-dd-yyyy";
+//    NSTimeZone *timeZone = [NSTimeZone localTimeZone];
+//    [dateFormatter setTimeZone:timeZone];
+ 
     Date_TimeCell *cell =  (Date_TimeCell *)[_tableView viewWithTag:1001];//[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     [cell.btn setTitle:[dateFormatter stringFromDate:date] forState:UIControlStateNormal];
     cell.refrshBtn.hidden = false;
 
-    
-    
+ 
+ 
 }
 
 @end

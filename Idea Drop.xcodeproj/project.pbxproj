@@ -17,6 +17,7 @@
 		13099E851D252E20005CC255 /* SideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 13099E841D252E20005CC255 /* SideMenu.m */; };
 		132145F61D33835C006D8D07 /* AlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 132145F51D33835C006D8D07 /* AlertView.m */; };
 		132145F81D338367006D8D07 /* AlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 132145F71D338367006D8D07 /* AlertView.xib */; };
+		1335495E1D48D51F00ECD94C /* popUp_up.png in Resources */ = {isa = PBXBuildFile; fileRef = 1335495D1D48D51F00ECD94C /* popUp_up.png */; };
 		1360F30A1D268FF500A0535A /* IdeaListTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1360F3081D268FF500A0535A /* IdeaListTVCell.m */; };
 		1360F30B1D268FF500A0535A /* IdeaListTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1360F3091D268FF500A0535A /* IdeaListTVCell.xib */; };
 		1360F3111D269C7B00A0535A /* ListTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1360F30F1D269C7B00A0535A /* ListTVCell.m */; };
@@ -99,6 +100,7 @@
 		132145F41D33835C006D8D07 /* AlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertView.h; sourceTree = "<group>"; };
 		132145F51D33835C006D8D07 /* AlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertView.m; sourceTree = "<group>"; };
 		132145F71D338367006D8D07 /* AlertView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlertView.xib; sourceTree = "<group>"; };
+		1335495D1D48D51F00ECD94C /* popUp_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = popUp_up.png; sourceTree = "<group>"; };
 		1360F3071D268FF500A0535A /* IdeaListTVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdeaListTVCell.h; sourceTree = "<group>"; };
 		1360F3081D268FF500A0535A /* IdeaListTVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdeaListTVCell.m; sourceTree = "<group>"; };
 		1360F3091D268FF500A0535A /* IdeaListTVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IdeaListTVCell.xib; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 		13620EE51D24FD2900F3E051 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1335495D1D48D51F00ECD94C /* popUp_up.png */,
 				137C6C321D2A7FE100FBF888 /* arrow-double-up-down-128.png */,
 				13099E5E1D25118D005CC255 /* 1242-x-2208.png */,
 				13620ED71D24FB8C00F3E051 /* Main.storyboard */,
@@ -755,6 +758,7 @@
 				13620EDE1D24FB8C00F3E051 /* LaunchScreen.storyboard in Resources */,
 				13099E771D252727005CC255 /* NavigationBar.xib in Resources */,
 				1360F3121D269C7B00A0535A /* ListTVCell.xib in Resources */,
+				1335495E1D48D51F00ECD94C /* popUp_up.png in Resources */,
 				137C6C1A1D2A323100FBF888 /* Date_TimeCell.xib in Resources */,
 				137C6C311D2A6B8A00FBF888 /* ClockView.xib in Resources */,
 				137C6C331D2A7FE100FBF888 /* arrow-double-up-down-128.png in Resources */,
@@ -956,7 +960,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neosofttech.ideaDrop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1c6384d5-8e6e-48c1-8fee-0d6922cd3312";
+				PROVISIONING_PROFILE = "56b0030c-95be-49b9-a528-6d060ddb0a16";
 			};
 			name = Debug;
 		};
@@ -972,7 +976,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.neosofttech.ideaDrop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1c6384d5-8e6e-48c1-8fee-0d6922cd3312";
+				PROVISIONING_PROFILE = "56b0030c-95be-49b9-a528-6d060ddb0a16";
 			};
 			name = Release;
 		};
